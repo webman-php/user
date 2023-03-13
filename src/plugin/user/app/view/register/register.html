@@ -128,7 +128,7 @@
         e.stopPropagation();
         e.preventDefault();
         $(this).attr("src", "/app/user/captcha/image/register?r="+ Math.random());
-        $('input[name="captcha"]').val("");
+        $('input[name="image_code"]').val('');
     });
 
     // 提交注册
