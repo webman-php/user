@@ -1,0 +1,7 @@
+/.idea
+/.vscode
+/vendor
+*.log
+.env
+src/plugin/user/public/upload
+src/plugin/user.zip
