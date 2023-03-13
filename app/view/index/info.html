@@ -1,0 +1,234 @@
+<?=plugin\user\api\Template::header('用户主页')?>
+
+<?=plugin\user\api\Template::nav()?>
+
+<div class="container">
+
+    <div class="row">
+
+        <?=plugin\user\api\Template::sidebar()?>
+
+        <div class="col-md-9 col-12 pt-4">
+
+            <div class="mb-4 card bg-white border-0 shadow-sm" style="min-height:80vh">
+                <div class="card-body">
+                    <h5 class="pb-2">个人资料</h5>
+                    <table class="table">
+                        <tbody>
+                        <tr>
+                            <td style="width:80px" class="py-3">昵称</td>
+                            <td class="text-secondary py-3"><?=htmlspecialchars($user['nickname']??'')?></td>
+                            <td style="width:80px" class="py-3">
+                                <a href="#" data-toggle="modal" data-target="#editName">编辑</a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="width:80px" class="py-3">邮箱</td>
+                            <td  class="text-secondary py-3"><?=htmlspecialchars($user['email']??'')?></td>
+                            <td style="width:80px" class="py-3"><a href="#" data-toggle="modal" data-target="#edit_email">编辑</a></td>
+                        </tr>
+                        <tr>
+                            <td style="width:80px" class="py-3">手机号</td>
+                            <td  class="text-secondary py-3"><?=htmlspecialchars($user['mobile']??'')?:'未绑定'?></td>
+                            <td style="width:80px" class="py-3"><a href="#" data-toggle="modal" data-target="#edit_mobile">编辑</a></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="editName" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">编辑名字</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form>
+                <div class="modal-body">
+                    <input type="text" name="nickname" class="form-control" value="<?=htmlspecialchars($user['nickname'])?>"/>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                    <button type="submit" class="btn btn-primary">保存</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    $('#editName form').submit(function(event) {
+        event.preventDefault();
+        $.ajax({
+            url: "/app/user/save",
+            type: 'POST',
+            data: $(this).serialize(),
+            success: function (res) {
+                if (res.code === 0) {
+                    $('#editName').modal('hide');
+                    webman.success("操作成功", function () {
+                        location.reload();
+                    })
+                    return;
+                }
+                webman.error(res.msg);
+            }
+        });
+    });
+</script>
+
+<!-- Modal -->
+<div class="modal fade" id="edit_email" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">编辑邮箱</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <input type="email" required name="email" class="form-control" value="<?=htmlspecialchars($user['email']??'')?>" placeholder="请输入邮箱"/>
+                    </div>
+                    <?php if($setting['email_verify']){ ?>
+                    <div class="d-flex">
+                        <input type="text" required name="email_code" class="form-control" autocomplete="off" placeholder="请输入邮箱验证码"/>
+                        <button type="button" class="btn btn-outline-primary ml-2" style="min-width:190px;" id="send_email_code_btn">获取验证码</button>
+                    </div>
+                    <?php } ?>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                    <button type="submit" class="btn btn-primary">保存</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="edit_mobile" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">编辑手机号</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <input type="number" required name="mobile" class="form-control" value="<?=htmlspecialchars($user['mobile']??'')?>" placeholder="请输入手机号"/>
+                    </div>
+                    <?php if($setting['mobile_verify']){ ?>
+                    <div class="d-flex">
+                        <input type="text" required name="mobile_code" class="form-control" autocomplete="off" placeholder="请输入手机验证码"/>
+                        <button type="button" class="btn btn-outline-primary ml-2" style="min-width:190px;" id="send_mobile_code_btn">发送验证码</button>
+                    </div>
+                    <?php } ?>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                    <button type="submit" class="btn btn-primary">保存</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    /// 修改邮箱 手机号
+    ["email", "mobile"].forEach(function (item) {
+        $('#edit_'+item+' form').submit(function(event) {
+            event.preventDefault();
+            $.ajax({
+                url: '/app/user/' + item,
+                dataType: 'json',
+                data: $(this).serialize(),
+                type: 'POST',
+                success: function (e) {
+                    if (e.code === 0) {
+                        $('#edit_' + item).modal('hide');
+                        webman.success('操作成功', function () {
+                            location.reload();
+                        });
+                        return;
+                    }
+                    let field = e.data ? e.data.field : false;
+                    field && $('input[name="'+field+'"]').addClass('is-invalid').focus();
+                    webman.error(e.msg);
+                }
+            });
+        });
+    });
+
+
+    // 发送邮箱 手机 验证码
+    ["email", "mobile"].forEach(function (item) {
+        $("#send_"+item+"_code_btn").on('click', function () {
+            let btn = $(this);
+            let input = $("input[name='"+item+"']");
+            $("input[name='"+item+"_code']").val("");
+            let value = input.val();
+            if (!value){
+                input.addClass("is-invalid").focus();
+                return;
+            }
+            let data = {};
+            data[item] = value;
+            btn.attr('disabled', true);
+            let timer = 0
+            let clear = function (timer) {
+                clearInterval(timer);
+                btn.attr("disabled", false);
+                btn.html("获取手机验证码");
+            }
+            if (item === 'mobile') {
+                let num = 60;
+                timer = setInterval(function () {
+                    btn.html("获取手机验证码(" + num + ")");
+                    --num <= 0 && clear(timer);
+                }, 1000);
+            }
+            $.ajax({
+                url: "/app/user/captcha/"+item+"/change",
+                type: "POST",
+                data: data,
+                success: function (res) {
+                    if (res.code) {
+                        timer && clear(timer);
+                        input.addClass("is-invalid").focus();
+                        return webman.error(res.msg);
+                    }
+                    webman.success('发送成功');
+                },
+                complete: function () {
+                    if (item === "email") {
+                        btn.attr('disabled', false);
+                    }
+                }
+            });
+        });
+    });
+
+    // 更新数据移除红框
+    $('input').keyup(function () {
+        $(this).removeClass('is-invalid');
+    });
+
+</script>
+
+<?=plugin\user\api\Template::footer()?>

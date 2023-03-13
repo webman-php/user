@@ -1,0 +1,55 @@
+<?=plugin\user\api\Template::header('头像设置')?>
+
+<?=plugin\user\api\Template::nav()?>
+<div class="container">
+
+    <div class="row">
+
+        <?=plugin\user\api\Template::sidebar()?>
+
+        <div class="col-md-9 col-12 pt-4">
+
+            <div class="mb-4 card bg-white border-0 shadow-sm" style="min-height:80vh">
+                <div class="card-body">
+                    <h5 class="pb-3 mb-4 border-bottom">头像设置</h5>
+                    <div class="mb-4">
+                        <img id="avatar" src="<?=$user['avatar']?>" width="128px" class="img-fluid"/>
+                    </div>
+                    <div class="mb-2 position-relative">
+                        <form enctype="multipart/form-data" id="avatarForm">
+                            <label class="btn btn-primary uploadBtn font-size-14">
+                                上传图片
+                                <input type="file" name="avatar" class="d-none" accept="image/*" />
+                            </label>
+                        </form>
+                        <div class="text-secondary mt-2">支持png,jpg,jpeg,gif格式  上传文件不能超过2M</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    $("input[name='avatar']").on('change', function () {
+        var data = new FormData;
+        data.append('avatar', $(this).prop('files')[0]);
+        $.ajax({
+            url: '/app/user/avatar',
+            type: 'POST',
+            data: data,
+            processData: false,
+            contentType: false,
+            success: function (res) {
+                if (res.code !== 0) {
+                    return webman.error(res.msg);
+                }
+                $('#avatar').attr('src', res.data.url);
+                webman.success('保存成功');
+            }
+        });
+    });
+</script>
+
+<?=plugin\user\api\Template::footer()?>

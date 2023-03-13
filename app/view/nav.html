@@ -1,0 +1,56 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+    <div class="container">
+        <a class="navbar-brand" href="/">首页</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <?php if(count($navs)>1){ ?>
+                    <?php foreach($navs as $nav){ ?>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown">
+                            <?=htmlspecialchars($nav['name'])?>
+                        </a>
+                        <div class="dropdown-menu">
+                            <?php foreach($nav['items'] as $item){ ?>
+                            <a class="dropdown-item  <?=htmlspecialchars($item['class'])?>" href="<?=htmlspecialchars($item['url'])?>"><?=htmlspecialchars($item['name'])?></a>
+                            <?php } ?>
+                        </div>
+                    </li>
+                    <?php } ?>
+                <?php }else{ ?>
+                    <?php foreach(current($navs)['items']??[] as $item){ ?>
+                    <li><a class="nav-link <?=htmlspecialchars($item['class'])?>" href="<?=htmlspecialchars($item['url'])?>"><?=htmlspecialchars($item['name'])?></a></li>
+                    <?php } ?>
+                <?php } ?>
+            </ul>
+
+
+            <div class="d-flex align-items-center ml-auto">
+
+                <?php if(session('user')){ ?>
+                <div class="nav-item dropdown">
+                    <a class="dropdown-toggle text-secondary" href="#" role="button" data-toggle="dropdown">
+                        <img src="<?=htmlspecialchars(session('user.avatar'))?>" class="rounded mr-2" height="40px" width="40px" /><?=htmlspecialchars(session('user.nickname'))?>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="/app/user">会员中心</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="/app/user/logout">退出</a></li>
+                    </ul>
+                </div>
+                <?php }else{ ?>
+                <a href="/app/user/login" class="btn btn-primary mr-2">登录</a>
+                <a href="/app/user/register" class="btn btn-outline-primary" >注册</a>
+                <?php } ?>
+
+            </div>
+
+        </div>
+    </div>
+</nav>
+
+
+

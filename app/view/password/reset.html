@@ -1,0 +1,131 @@
+<?=plugin\user\api\Template::header('用户登录')?>
+
+<?=plugin\user\api\Template::nav()?>
+
+<div class="container">
+    <div class="row d-flex align-items-center justify-content-center">
+
+        <div style="width:360px;" class="my-4">
+
+            <form method="post" id="send-captcha-form">
+                <h3 class="mb-3">找回密码</h3>
+                <div class="form-group">
+                    <input type="text" name="email_or_mobile" class="form-control" placeholder="输入手机或邮箱" required>
+                </div>
+                <div class="form-group d-flex justify-content-between">
+                    <input type="text" name="image_code" class="form-control w-50" autocomplete="off" placeholder="输入图形验证码" required>
+                    <img class="rounded" src="/app/user/captcha/image/password-reset" />
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary btn-block w-100">下一步</button>
+                </div>
+            </form>
+
+            <form method="post" style="display:none" id="reset-password-form">
+                <h3 class="mb-3">重置密码</h3>
+                <div class="alert alert-success"></div>
+                <input type="hidden" name="type">
+                <input type="hidden" name="item">
+                <div class="form-group">
+                    <input type="password" name="password" class="form-control" placeholder="密码" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" name="password_confirm" class="form-control" placeholder="重复密码" required>
+                </div>
+                <div class="form-group">
+                    <input type="text" name="captcha" class="form-control" placeholder="输入验证码" required>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary btn-block w-100">重置密码</button>
+                </div>
+            </form>
+        </div>
+
+
+    </div>
+
+</div>
+<style>
+    html, body {
+        height: 90%;
+    }
+    .container, .row {
+        height: 100%;
+    }
+</style>
+
+<script>
+    $('form img').on('click', function (e) {
+        e.stopPropagation();
+        e.preventDefault();
+        $(this).attr('src', '/app/user/captcha/image/password-reset?r='+ Math.random());
+        $('input[name="image_code"]').val('');
+    });
+
+    $('input').keyup(function () {
+        $(this).removeClass('is-invalid');
+    });
+
+    $('#send-captcha-form').submit(function(event) {
+        event.preventDefault();
+        let data = {
+            image_code: $('input[name="image_code"]').val()
+        };
+        let item = $('input[name="email_or_mobile"]').val();
+        let type = "email";
+        if (item.indexOf('@') !== -1) {
+            data.email = item;
+        } else {
+            data.mobile = item;
+            type = "mobile";
+        }
+        let submitBtn = $(this).find('button[type="submit"]').attr('disabled', true);
+        $.ajax({
+            url: "/app/user/password/sendResetCaptcha",
+            type: "POST",
+            dataType: 'json',
+            data: data,
+            success: function (e) {
+                if (e.code !== 0) {
+                    let field = e.data ? e.data.field : false;
+                    field !== 'image_code' && $('form img').trigger('click');
+                    field && $('input[name="'+field+'"]').addClass('is-invalid').focus();
+                    return webman.error(e.msg);
+                }
+                $('input[name="type"]').val(type);
+                $('input[name="item"]').val(item);
+                $('.alert-success').html("验证码已经发送至" + item + "<br>请将验证码填写到此表单中完成密码重置");
+                $('#reset-password-form').show();
+                $('#send-captcha-form').hide();
+            },
+            complete: function () {
+                submitBtn.attr('disabled', false);
+            }
+        });
+    });
+
+
+    $('#reset-password-form').submit(function(event) {
+        event.preventDefault();
+        $.ajax({
+            url: "/app/user/password/reset",
+            type: "POST",
+            dataType: 'json',
+            data: $(this).serialize(),
+            success: function (e) {
+                if (e.code !== 0) {
+                    let field = e.data ? e.data.field : false;
+                    field && $('input[name="'+field+'"]').addClass('is-invalid').focus();
+                    return webman.error(e.msg);
+                }
+                webman.success('操作成功', function(){
+                    location.href = "/app/user/login";
+                });
+            }
+        });
+    });
+
+</script>
+
+<?=plugin\user\api\Template::footer()?>
+
