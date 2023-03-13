@@ -50,6 +50,9 @@ class IndexController
                 $user->$key = $value;
             }
             $user->save();
+            $user = session('user');
+            $user['nickname'] = $update['nickname'];
+            $request->session()->set('user', $user);
         }
         return json(['code' => 0, 'msg' => 'ok']);
     }
