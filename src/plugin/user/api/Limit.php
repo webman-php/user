@@ -20,7 +20,38 @@ class Limit
      */
     public static function perMinute($key, $maxRequests)
     {
-        $file = runtime_path("tmp/limit/minute-" . date('Hi') . "-$key.limit");
+        $prefix = 'minute-';
+        $file = date('YmdHi') . "-$key.limit";
+        static::by($key, $maxRequests, $prefix, $file);
+    }
+
+    /**
+     * 按分钟限制频率
+     * @param $key
+     * @param $maxRequests
+     * @return void
+     * @throws BusinessException
+     */
+    public static function perDay($key, $maxRequests)
+    {
+        $prefix = 'day-';
+        $file = date('Ymd') . "-$key.limit";
+        static::by($key, $maxRequests, $prefix, $file);
+    }
+
+    /**
+     * 通用频率限制
+     * @param $key
+     * @param $maxRequests
+     * @param $file
+     * @param $prefix
+     * @return void
+     * @throws BusinessException
+     */
+    public static function by($key, $maxRequests, $prefix, $file)
+    {
+        $basePath = '/tmp/limit';
+        $file = runtime_path("$basePath/{$prefix}$file");
         $path = dirname($file);
         if (!is_dir($path)) {
             mkdir($path, 0777, true);
@@ -29,13 +60,10 @@ class Limit
             if (!preg_match('/^[0-9a-zA-Z\-_.]+$/', $key)) {
                 throw new RuntimeException('$key只能是字母和数字以及(-_.)的组合');
             }
-            file_put_contents($file, 1);
-            $time = time() - 60;
-            foreach (glob(runtime_path('tmp/limit/minute-*')) as $file) {
-                if (filemtime($file) < $time) {
-                    unlink($file);
-                }
+            foreach (glob(runtime_path("$basePath/$prefix*")) as $expiredFile) {
+                unlink($expiredFile);
             }
+            file_put_contents($file, 1);
             return;
         }
         $count = (int)file_get_contents($file);
