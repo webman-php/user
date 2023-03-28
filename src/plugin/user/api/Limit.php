@@ -20,13 +20,13 @@ class Limit
      */
     public static function perMinute($key, $maxRequests)
     {
-        $prefix = 'minute-';
-        $file = date('YmdHi') . "-$key.limit";
-        static::by($key, $maxRequests, $prefix, $file);
+        $prefix = "minute-$key-";
+        $name = date('YmdHi') . ".limit";
+        static::by($prefix, $name, $maxRequests);
     }
 
     /**
-     * 按分钟限制频率
+     * 按天限制频率
      * @param $key
      * @param $maxRequests
      * @return void
@@ -34,30 +34,36 @@ class Limit
      */
     public static function perDay($key, $maxRequests)
     {
-        $prefix = 'day-';
-        $file = date('Ymd') . "-$key.limit";
-        static::by($key, $maxRequests, $prefix, $file);
+        $prefix = "day-$key-";
+        $name = date('Ymd') . ".limit";
+        static::by($prefix, $name, $maxRequests);
     }
 
     /**
      * 通用频率限制
-     * @param $key
-     * @param $maxRequests
-     * @param $file
      * @param $prefix
+     * @param $file
+     * @param $maxRequests
      * @return void
      * @throws BusinessException
      */
-    public static function by($key, $maxRequests, $prefix, $file)
+    public static function by($prefix, $name, $maxRequests)
     {
-        $basePath = '/tmp/limit';
-        $file = runtime_path("$basePath/{$prefix}$file");
+        $date = date('Ymd');
+        $basePath = "tmp/limit/$date";
+        if (!is_dir(runtime_path($basePath))) {
+            foreach (glob(runtime_path("tmp/limit/*")) as $dir) {
+                echo $dir;
+                remove_dir($dir);
+            }
+        }
+        $file = runtime_path("$basePath/{$prefix}$name");
         $path = dirname($file);
         if (!is_dir($path)) {
             mkdir($path, 0777, true);
         }
         if (!is_file($file)) {
-            if (!preg_match('/^[0-9a-zA-Z\-_.]+$/', $key)) {
+            if (!preg_match('/^[0-9a-zA-Z\-_.]+$/', $prefix)) {
                 throw new RuntimeException('$key只能是字母和数字以及(-_.)的组合');
             }
             foreach (glob(runtime_path("$basePath/$prefix*")) as $expiredFile) {
