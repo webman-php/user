@@ -63,8 +63,8 @@ class Limit
             mkdir($path, 0777, true);
         }
         if (!is_file($file)) {
-            if (!preg_match('/^[0-9a-zA-Z\-_.]+$/', $prefix)) {
-                throw new RuntimeException('$key只能是字母和数字以及(-_.)的组合');
+            if (!preg_match('/^[0-9a-zA-Z\-_.:\[\]]+$/', $prefix)) {
+                throw new RuntimeException('$prefix只能是字母和数字以及(-_.)的组合');
             }
             foreach (glob(runtime_path("$basePath/$prefix*")) as $expiredFile) {
                 unlink($expiredFile);
