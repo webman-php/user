@@ -22,7 +22,7 @@ class CaptchaController
      * 不需要登录的方法
      * @var string[]
      */
-    protected $noNeedLogin = ['image', 'email', 'sms'];
+    protected $noNeedLogin = ['image', 'email', 'mobile'];
 
     /**
      * 图片验证码
