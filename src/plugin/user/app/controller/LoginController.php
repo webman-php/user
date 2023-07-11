@@ -53,6 +53,9 @@ class LoginController
 
             foreach ($users as $user) {
                 if (password_verify($password, $user->password)) {
+                    if ($user->status != 0) {
+                        return json(['code' => 1, 'msg' => '当前账户已经被禁用']);
+                    }
                     $request->session()->set('user', [
                         'id' => $user->id,
                         'username' => $user->username,
