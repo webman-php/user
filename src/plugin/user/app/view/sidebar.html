@@ -18,7 +18,7 @@
         <div class="mt-3 mb-2 bold ml-4 text-secondary fw-medium"><?=$sidebar['name']?></div>
         <div class="flex-column nav nav-pills">
             <?php foreach($sidebar['items'] as $item){ ?>
-            <a href="<?=$item['url']?>" class="nav-link <?=$item['class']?>"><?=$item['name']?></a>
+            <a href="<?=$item['url']?>" class="nav-link <?=$item['class']??''?>"><?=$item['name']?></a>
             <?php } ?>
         </div>
         <?php } ?>
