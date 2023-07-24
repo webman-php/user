@@ -19,6 +19,7 @@
                     <input type="text" name="image_code" class="form-control w-50" autocomplete="off" placeholder="验证码" required>
                     <img class="rounded" src="/app/user/captcha/image/login"/>
                 </div>
+                <input type="hidden" name="redirect" value="<?=$redirect?>">
                 <div class="form-group">
                     <button type="submit" class="btn btn-primary btn-block w-100">登录</button>
                 </div>
@@ -69,7 +70,7 @@
                     return webman.error(e.msg);
                 }
                 webman.success('登录成功', function () {
-                    location.href = '/app/user';
+                    location.href = e.data?.redirect || '/app/user';
                 });
             }
         });
