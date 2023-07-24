@@ -9,16 +9,20 @@
             <ul class="navbar-nav mr-auto">
                 <?php if(count($navs)>1){ ?>
                     <?php foreach($navs as $nav){ ?>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown">
-                            <?=htmlspecialchars($nav['name'])?>
-                        </a>
-                        <div class="dropdown-menu">
-                            <?php foreach($nav['items'] as $item){ ?>
-                            <a class="dropdown-item  <?=htmlspecialchars($item['class']??'')?>" href="<?=htmlspecialchars($item['url'])?>"><?=htmlspecialchars($item['name'])?></a>
-                            <?php } ?>
-                        </div>
-                    </li>
+                        <?php if(count($nav['items']) !== 1) {?>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown">
+                                <?=htmlspecialchars($nav['name'])?>
+                            </a>
+                            <div class="dropdown-menu">
+                                <?php foreach($nav['items'] as $item){ ?>
+                                <a class="dropdown-item  <?=htmlspecialchars($item['class']??'')?>" href="<?=htmlspecialchars($item['url'])?>"><?=htmlspecialchars($item['name'])?></a>
+                                <?php } ?>
+                            </div>
+                        </li>
+                        <?php } else { $item = current($nav['items']);?>
+                            <li><a class="nav-link <?=htmlspecialchars($item['class']??'')?>" href="<?=htmlspecialchars($item['url'])?>"><?=htmlspecialchars($item['name'])?></a></li>
+                        <?php } ?>
                     <?php } ?>
                 <?php }else{ ?>
                     <?php foreach(current($navs)['items']??[] as $item){ ?>
