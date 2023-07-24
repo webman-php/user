@@ -15,14 +15,14 @@
                         </a>
                         <div class="dropdown-menu">
                             <?php foreach($nav['items'] as $item){ ?>
-                            <a class="dropdown-item  <?=htmlspecialchars($item['class'])?>" href="<?=htmlspecialchars($item['url'])?>"><?=htmlspecialchars($item['name'])?></a>
+                            <a class="dropdown-item  <?=htmlspecialchars($item['class']??'')?>" href="<?=htmlspecialchars($item['url'])?>"><?=htmlspecialchars($item['name'])?></a>
                             <?php } ?>
                         </div>
                     </li>
                     <?php } ?>
                 <?php }else{ ?>
                     <?php foreach(current($navs)['items']??[] as $item){ ?>
-                    <li><a class="nav-link <?=htmlspecialchars($item['class'])?>" href="<?=htmlspecialchars($item['url'])?>"><?=htmlspecialchars($item['name'])?></a></li>
+                    <li><a class="nav-link <?=htmlspecialchars($item['class']??'')?>" href="<?=htmlspecialchars($item['url'])?>"><?=htmlspecialchars($item['name'])?></a></li>
                     <?php } ?>
                 <?php } ?>
             </ul>
