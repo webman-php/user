@@ -33,6 +33,11 @@ class LoginController
             $username = $request->post('username');
             $password = $request->post('password');
             $imageCode = $request->post('image_code');
+            $redirect = $request->post('redirect', '');
+            // $redirect必须是相对路径
+            if (strpos($redirect, '/') !== 0 || strpos($redirect, '//') === 0) {
+                $redirect = '';
+            }
 
             $captchaData = session('captcha-image-login');
 
@@ -64,14 +69,18 @@ class LoginController
                         'email' => $user->email,
                         'mobile' => $user->mobile,
                     ]);
-                    return json(['code' => 0, 'msg' => 'ok']);
+                    return json(['code' => 0, 'msg' => 'ok', 'data' => [
+                        'redirect' => $redirect
+                    ]]);
                 }
             }
 
             return json(['code' => 1, 'msg' => '用户名或密码错误']);
         }
 
-        return view('login/login', ['name' => 'user']);
+        $redirect = $request->get('redirect', '');
+
+        return view('login/login', ['name' => 'user', 'redirect' => $redirect]);
     }
 
     /**
