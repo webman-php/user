@@ -8,6 +8,7 @@ use plugin\user\app\model\User;
 use support\exception\BusinessException;
 use support\Request;
 use support\Response;
+use Webman\Event\Event;
 
 class LoginController
 {
@@ -33,11 +34,6 @@ class LoginController
             $username = $request->post('username');
             $password = $request->post('password');
             $imageCode = $request->post('image_code');
-            $redirect = $request->post('redirect', '');
-            // $redirect必须是相对路径
-            if (strpos($redirect, '/') !== 0 || strpos($redirect, '//') === 0) {
-                $redirect = '';
-            }
 
             $captchaData = session('captcha-image-login');
 
@@ -69,18 +65,16 @@ class LoginController
                         'email' => $user->email,
                         'mobile' => $user->mobile,
                     ]);
-                    return json(['code' => 0, 'msg' => 'ok', 'data' => [
-                        'redirect' => $redirect
-                    ]]);
+                    // 发布登录事件
+                    Event::emit('user.login', $user);
+                    return json(['code' => 0, 'msg' => 'ok']);
                 }
             }
 
             return json(['code' => 1, 'msg' => '用户名或密码错误']);
         }
 
-        $redirect = $request->get('redirect', '');
-
-        return view('login/login', ['name' => 'user', 'redirect' => $redirect]);
+        return view('login/login', ['name' => 'user']);
     }
 
     /**
@@ -91,6 +85,11 @@ class LoginController
     public function logout(Request $request): Response
     {
         $session = $request->session();
+        $userId = session('user.id');
+        if ($userId && $user = User::find($userId)) {
+            // 发布退出事件
+            Event::emit('user.logout', $user);
+        }
         $session->delete('user');
         return redirect('/app/user/login');
     }

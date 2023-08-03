@@ -32,7 +32,7 @@ class RegisterController
         if ($request->method() === 'GET') {
             $settings = Register::getSetting();
             return view('register/register', [
-                'settings' => $settings
+                'settings' => $settings,
             ]);
         }
 
