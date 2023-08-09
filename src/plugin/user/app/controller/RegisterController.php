@@ -123,7 +123,7 @@ class RegisterController
         Event::emit('user.register', $waUser);
 
         // 清理session
-        $request->session()->flush();
+        $request->session()->delete('user');
 
         return json(['code' => 0, 'msg' => 'ok']);
     }
