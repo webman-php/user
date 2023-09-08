@@ -25,7 +25,8 @@ class Register
         'email_verify' => false,
         'mobile_enable' => false,
         'mobile_verify' => false,
-        'captcha_enable' => true
+        'captcha_enable' => true,
+        'register_enable' => true,
     ];
 
     /**
@@ -56,6 +57,6 @@ class Register
         $option->value = json_encode($settings);
         $option->save();
     }
-    
-    
+
+
 }

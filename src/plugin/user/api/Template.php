@@ -2,6 +2,7 @@
 
 namespace plugin\user\api;
 
+use plugin\user\app\service\Register;
 use stdClass;
 use support\Log;
 use Throwable;
@@ -36,6 +37,7 @@ class Template
     public static function nav(): ?string
     {
         $navs = static::getNavData()['navs'];
+        $setting = Register::getSetting();
         ob_start();
         try {
             include base_path('plugin/user/app/view/nav.html');
