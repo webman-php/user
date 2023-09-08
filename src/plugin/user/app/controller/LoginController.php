@@ -5,6 +5,7 @@ namespace plugin\user\app\controller;
 use plugin\user\api\Captcha;
 use plugin\user\api\Limit;
 use plugin\user\app\model\User;
+use plugin\user\app\service\Register;
 use support\exception\BusinessException;
 use support\Request;
 use support\Response;
@@ -74,7 +75,7 @@ class LoginController
             return json(['code' => 1, 'msg' => '用户名或密码错误']);
         }
 
-        return view('login/login', ['name' => 'user']);
+        return view('login/login', ['name' => 'user', 'setting' => Register::getSetting()]);
     }
 
     /**
