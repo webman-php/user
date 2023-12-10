@@ -29,11 +29,16 @@ class RegisterController
      */
     public function index(Request $request): Response
     {
+        $settings = Register::getSetting();
         if ($request->method() === 'GET') {
             $settings = Register::getSetting();
             return view('register/register', [
                 'settings' => $settings,
             ]);
+        }
+
+        if (!$settings['register_enable']) {
+            throw new FormException("注册功能已关闭", 1);
         }
 
         // 每个ip每分钟只能调用10次
