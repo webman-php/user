@@ -91,7 +91,7 @@ class CaptchaController
         }
         $mobile = $request->post('mobile');
         $captchaType = 'mobile';
-        $captchaData = Captcha::create($mobile);
+        $captchaData = Captcha::create($mobile, '0123456789');
         $request->session()->set("captcha-$captchaType-$type", $captchaData);
         // 固定发送tag为captcha的短信
         try {
