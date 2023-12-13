@@ -47,7 +47,7 @@
                 </div>
                 <?php }else{ ?>
                 <a href="/app/user/login" class="btn btn-primary mr-2">登录</a>
-                <?php if($setting['register_enable']){ ?>
+                <?php if($setting['register_enable']??true){ ?>
                 <a href="/app/user/register" class="btn btn-outline-primary" >注册</a>
                 <?php } ?>
                 <?php } ?>

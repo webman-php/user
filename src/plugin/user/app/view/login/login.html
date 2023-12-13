@@ -23,7 +23,7 @@
                     <button type="submit" class="btn btn-primary btn-block w-100">登录</button>
                 </div>
                 <div class="form-group d-flex justify-content-between">
-                    <?php if($setting['register_enable']){ ?>
+                    <?php if($setting['register_enable']??true){ ?>
                     <a class="text-decoration-none" id="registerLink" href="/app/user/register">没有账号？点这里注册</a>
                     <?php } ?>
                     <a class="text-decoration-none" href="/app/user/password/reset">找回密码</a>
