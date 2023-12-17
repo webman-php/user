@@ -37,7 +37,7 @@ class RegisterController
             ]);
         }
 
-        if (!$settings['register_enable']) {
+        if (empty($settings['register_enable'])) {
             throw new FormException("注册功能已关闭", 1);
         }
 
