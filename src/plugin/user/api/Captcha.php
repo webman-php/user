@@ -40,7 +40,7 @@ class Captcha
     {
         // 邮箱、手机验证码10分钟过期
         $ttl = 10 * 60;
-        if (!is_array($data) || (string)$data['code'] !== (string)$code) {
+        if (!is_array($data) || strtolower((string)$data['code']) !== strtolower((string)$code)) {
             throw new BusinessException('验证码不正确', 11);
         }
         if ($item && time() - $data['time'] > $ttl) {
@@ -98,5 +98,5 @@ class Captcha
         }
         return $code;
     }
-    
+
 }
