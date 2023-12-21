@@ -48,10 +48,22 @@ class LoginController
 
             $request->session()->delete('captcha-image-register');
 
-            $users = User::where('username', $username)
-                ->orWhere('email', $username)
-                ->orWhere('mobile', $username)
-                ->get();
+            if (empty($username)) {
+                return json(['code' => 1, 'msg' => '用户名不能为空', 'data' => [
+                    'field' => 'username'
+                ]]);
+            }
+
+            $users = User::where('username', $username);
+            // 如果是邮箱
+            if (filter_var($username, FILTER_VALIDATE_EMAIL)) {
+                $users->orWhere('email', $username);
+            }
+            // 如果是纯数字
+            if (is_numeric($username)) {
+                $users->orWhere('mobile', $username);
+            }
+            $users = $users->get();
 
             foreach ($users as $user) {
                 if (password_verify($password, $user->password)) {
