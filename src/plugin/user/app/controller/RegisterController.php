@@ -45,9 +45,9 @@ class RegisterController
         Limit::perMinute($request->getRealIp(), 10);
 
         // 收集数据
-        $username = $request->post('username');
+        $username = trim($request->post('username', ''));
         $password = $request->post('password');
-        $nickname = $request->post('nickname');
+        $nickname = trim($request->post('nickname', ''));
         $email = $request->post('email');
         $mobile = $request->post('mobile');
         $emailCode = $request->post('email_code');
@@ -61,6 +61,21 @@ class RegisterController
                 'field' => 'username'
             ]]);
         }
+
+        // $username不能是纯数字
+        if (is_numeric($username)) {
+            return json(['code' => 1, 'msg' => '用户名不能是纯数字', 'data' => [
+                'field' => 'username'
+            ]]);
+        }
+
+        // $username不能带@符号
+        if (strpos($username, '@') !== false) {
+            return json(['code' => 1, 'msg' => '用户名不能带@符号', 'data' => [
+                'field' => 'username'
+            ]]);
+        }
+
         if (strlen($password) < 6) {
             return json(['code' => 1, 'msg' => '密码至少6个字符', 'data' => [
                 'field' => 'password'
