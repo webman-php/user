@@ -137,6 +137,8 @@ class RegisterController
             $waUser->$key = $value;
         }
         $waUser->avatar = '/app/user/default-avatar.png';
+        $waUser->join_time = date('Y-m-d H:i:s');
+        $waUser->join_ip = $request->getRealIp();
         $waUser->save();
 
         // 发布注册事件
