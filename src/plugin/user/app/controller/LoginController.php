@@ -80,6 +80,9 @@ class LoginController
                     ]);
                     // 发布登录事件
                     Event::emit('user.login', $user);
+                    $user->last_ip = $request->getRealIp();
+                    $user->last_time = date('Y-m-d H:i:s');
+                    $user->save();
                     return json(['code' => 0, 'msg' => 'ok']);
                 }
             }
