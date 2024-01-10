@@ -28,6 +28,22 @@
                     <?php } ?>
                     <a class="text-decoration-none" href="/app/user/password/reset">找回密码</a>
                 </div>
+                <? if($snsSetting['platform']['enable']): ?>
+                <div class="other-login">
+                    <div class="title-warp d-flex justify-content-between mb-3">
+                        <div class="line text-secondary"></div>
+                        <div class="title">其他方式登录</div>
+                        <div class="line text-secondary"></div>
+                    </div>
+                    <div class="other-login-list d-flex justify-content-around">
+                        <a href="<?= $snsSetting['platform']['auth_url']; ?>" style="line-height: 1;">
+                            <svg class="icon" aria-hidden="true" id="weixin">
+                                <use xlink:href="#icon-weixin"></use>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+                <? endif; ?>
             </form>
         </div>
 
@@ -42,8 +58,35 @@
     .container, .row {
         height: 100%;
     }
+    /* sns插件样式 */
+    .other-login .title-warp {
+        align-items: center;
+    }
+    .other-login .title-warp .title{
+        color: rgba(0,0,0,.5);
+    }
+    .other-login .title-warp .line {
+        box-sizing: border-box;
+        margin: 0;
+        min-width: 0;
+        border-top: 1px solid;
+        width: 120px
+    }
+    .other-login .other-login-list{
+        font-size: 38px;
+    }
+    .other-login .icon {
+        width: 1em;
+        height: 1em;
+        vertical-align: -0.15em;
+        fill: currentColor;
+        overflow: hidden;
+    }
 </style>
 
+<? if($snsSetting['platform']['enable']): ?>
+<script src="/app/user/js/sns-iconfont.js"></script>
+<? endif; ?>
 <script>
     $('form img').on('click', function (e) {
         e.stopPropagation();

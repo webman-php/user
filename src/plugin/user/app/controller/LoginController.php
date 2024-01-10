@@ -10,6 +10,7 @@ use support\exception\BusinessException;
 use support\Request;
 use support\Response;
 use Webman\Event\Event;
+use plugin\sns\api\Sns;
 
 class LoginController
 {
@@ -90,7 +91,9 @@ class LoginController
             return json(['code' => 1, 'msg' => '用户名或密码错误']);
         }
 
-        return view('login/login', ['name' => 'user', 'setting' => Register::getSetting()]);
+        // 是否有安装sns扩展插件
+        $snsSetting = class_exists(Sns::class) ? Sns::getSetting() : ['wechat' => ['enable' => false], 'platform' => ['enable' => false]];
+        return view('login/login', ['name' => 'user', 'setting' => Register::getSetting(), 'snsSetting' => $snsSetting]);
     }
 
     /**
