@@ -16,11 +16,11 @@ const webman = {
         if (!$("#toast-box").length) {
             $('body').append('<div id="toast-box" style="width:260px;z-index:10001;position:fixed;right:20px;top:20px;"></div>');
         }
-        $("#toast-box").append('<div class="toast" role="alert" data-delay="'+delay+'">\n' +
+        $("#toast-box").append('<div class="toast" role="alert" data-delay="'+delay+'" data-bs-delay="'+delay+'">\n' +
             '                <div class="toast-header">\n' +
-            '                    <div class="rounded mr-2 bg-'+type+'" style="height:20px;width:20px;"></div>\n' +
-            '                    <strong class="mr-auto">提示</strong>\n' +
-            '                    <button type="button" class="ml-2 mb-1 close" data-dismiss="toast">\n' +
+            '                    <div class="rounded mr-2 me-2 bg-'+type+'" style="height:20px;width:20px;"></div>\n' +
+            '                    <strong class="mr-auto me-auto">提示</strong>\n' +
+            '                    <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" data-bs-dismiss="toast">\n' +
             '                        <span aria-hidden="true">&times;</span>\n' +
             '                    </button>\n' +
             '                </div>\n' +
