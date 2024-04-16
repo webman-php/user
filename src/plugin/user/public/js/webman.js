@@ -16,7 +16,7 @@ const webman = {
         if (!$("#toast-box").length) {
             $('body').append('<div id="toast-box" style="width:260px;z-index:10001;position:fixed;right:20px;top:20px;"></div>');
         }
-        $("#toast-box").append('<div class="toast" role="alert" data-delay="'+delay+'" data-bs-delay="'+delay+'">\n' +
+        $("#toast-box").append('<div class="toast mb-1" role="alert" data-delay="'+delay+'" data-bs-delay="'+delay+'">\n' +
             '                <div class="toast-header">\n' +
             '                    <div class="rounded mr-2 me-2 bg-'+type+'" style="height:20px;width:20px;"></div>\n' +
             '                    <strong class="mr-auto me-auto">提示</strong>\n' +
