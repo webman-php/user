@@ -53,6 +53,14 @@ class Middleware implements MiddlewareInterface
 
         // 访问的方法需要登录
         if ($noNeedLogin !== '*' && !in_array($action, $noNeedLogin)) {
+            // 判断是否为 AJAX 请求
+            if ($request->isAjax()) {
+                return json([
+                    'code' => 401, 
+                    'msg' => '请先登录', 
+                    'redirect' => '/app/user/login'
+                ], 401);
+            }
             return redirect('/app/user/login');
         }
 
